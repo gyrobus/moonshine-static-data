@@ -1,0 +1,47 @@
+{
+  "name": "gyrobus/moonshine-static-data",
+  "description": "Image cropper field for moonshine v3",
+  "keywords": ["laravel", "CRUD static data", "moonshine"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pavel Andante",
+      "email": "pavel-andante@yandex.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/gyrobus/moonshine-static-data/issues",
+    "source": "https://github.com/gyrobus/moonshine-static-data"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/gyrobus/moonshine-cropper"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "moonshine/moonshine": ">3.0",
+    "moonshine/tinymce": "^1.0",
+    "gyrobus/moonshine-cropper": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gyrobus\\MoonshineStaticData\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "conflict": {
+    "moonshine/moonshine": "<3.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Gyrobus\\MoonshineStaticData\\Providers\\StaticDataServiceProvider"
+      ]
+    }
+  }
+}

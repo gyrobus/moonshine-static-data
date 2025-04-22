@@ -17,25 +17,14 @@ final class PackageNameServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
-        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'package_name');
-        //$this->loadViewsFrom(__DIR__ . '/../../resources/views', 'package_name');
-        //$this->loadRoutesFrom(__DIR__ . '/../../routes');
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'moonshine-static-data');
 
         $this->publishes([
-            __DIR__ . '/../../config/package_name.php' => config_path('package_name.php'),
+            __DIR__ . '/../../config/static-data.php' => config_path('moonshine-static-data.php'),
         ]);
 
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../config/package_name.php',
-            'package_name'
-        );
-
         $this->publishes([
-            __DIR__ . '/../../public' => public_path('vendor/package_name'),
-        ], ['package_name-assets', 'laravel-assets']);
-
-        $this->publishes([
-            __DIR__ . '/../../lang' => $this->app->langPath('vendor/package_name'),
+            __DIR__ . '/../../lang' => $this->app->langPath('vendor/moonshine-static-data'),
         ]);
 
         $this->commands([]);
