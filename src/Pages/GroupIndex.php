@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gyrobus\StaticData\Pages;
+namespace Gyrobus\MoonshineStaticData\Pages;
 
-use Gyrobus\StaticData\Models\StaticData;
-use Gyrobus\StaticData\Resources\StaticDataResource;
+use Gyrobus\MoonshineStaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Resources\StaticDataResource;
 use MoonShine\Laravel\Pages\Page;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Laravel\TypeCasts\ModelCaster;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Gyrobus\StaticData\Models;
+namespace Gyrobus\MoonshineStaticData\Models;
 
-use Gyrobus\StaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

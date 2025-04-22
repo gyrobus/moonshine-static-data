@@ -1,8 +1,8 @@
 <?php
 
-namespace Gyrobus\StaticData\Traits;
+namespace Gyrobus\MoonshineStaticData\Traits;
 
-use Gyrobus\StaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Illuminate\Support\Facades\View;
 
 trait StaticDataTrait {

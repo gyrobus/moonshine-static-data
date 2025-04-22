@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gyrobus\StaticData\Providers;
+namespace Gyrobus\MoonshineStaticData\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;

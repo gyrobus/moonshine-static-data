@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Gyrobus\StaticData\Models\StaticData;
-use Gyrobus\StaticData\Models\StaticDataValue;
-use Gyrobus\StaticData\Pages\GroupIndex;
-use Gyrobus\StaticData\Pages\GroupItemForm;
-use Gyrobus\StaticData\Pages\GroupItems;
+use Gyrobus\MoonshineStaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Models\StaticDataValue;
+use Gyrobus\MoonshineStaticData\Pages\GroupIndex;
+use Gyrobus\MoonshineStaticData\Pages\GroupItemForm;
+use Gyrobus\MoonshineStaticData\Pages\GroupItems;
 use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Http\Responses\MoonShineJsonResponse;
 use MoonShine\Laravel\MoonShineRequest;
