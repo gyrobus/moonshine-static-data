@@ -4,6 +4,7 @@ namespace Gyrobus\MoonshineStaticData\Traits;
 
 use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Illuminate\Support\Facades\View;
+use Illuminate\Database\Eloquent\Collection;
 
 trait StaticDataTrait {
     /**
@@ -56,7 +57,7 @@ trait StaticDataTrait {
         return $model;
     }
 
-    protected function getStaticDataArray(StaticData $items): array
+    protected function getStaticDataArray(Collection $items): array
     {
         $staticData = [];
         foreach ($items as $item) {
