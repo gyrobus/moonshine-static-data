@@ -7,7 +7,7 @@ namespace Gyrobus\MoonshineStaticData\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 
-final class PackageNameServiceProvider extends ServiceProvider
+final class StaticDataServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
