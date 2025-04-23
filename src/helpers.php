@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\View;
-use Vendor\StaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Models\StaticData;
 
 if (!function_exists('staticData')) {
     /**
@@ -11,21 +11,31 @@ if (!function_exists('staticData')) {
      * @param mixed $default
      * @return mixed
      */
-    function staticData(string $key, $default = ''): string
+    function staticData(string $key, $default = '', $viewVariableName = 'staticData'): string
     {
+        $staticData = View::shared($viewVariableName) ?? [];
+        if (isset($staticData[$key])) return $staticData[$key];
+
         [$groupSlug, $rowSlug] = explode('.', $key . '.', 2);
 
-        // Получаем расшаренную переменную staticData
-        $sharedData = View::shared('staticData') ?? collect();
+        $item = StaticData::with('data', function ($q) {
+            $q->where('lang', app()->getLocale())
+                ->take(1);
+        })
+            ->where('group_slug', $groupSlug)
+            ->where('slug', $rowSlug)
+            ->first();
 
-        $match = $sharedData->firstWhere(fn($item) => $item->group_slug === $groupSlug && $item->slug === $rowSlug);
-
-        if ($match) {
-            return $match->getData();
+        if ($item) {
+            View::share(
+                $viewVariableName,
+                array_merge(
+                    View::shared($viewVariableName) ?? [],
+                    [implode('.', [$item->group_slug, $item->slug]) => $item->data ? $item->data[0]->data : $default]
+                )
+            );
         }
 
-        $fallback = StaticData::where('group_slug', $groupSlug)->where('slug', $rowSlug)->first();
-
-        return $fallback?->getData() ?? $default;
+        return $item && $item->data ? $item->data[0]->data : $default;
     }
 }
