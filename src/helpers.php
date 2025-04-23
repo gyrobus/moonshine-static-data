@@ -18,10 +18,10 @@ if (!function_exists('staticData')) {
 
         [$groupSlug, $rowSlug] = explode('.', $key . '.', 2);
 
-        $item = StaticData::with('data', function ($q) {
+        $item = StaticData::with(['data' => function ($q) {
             $q->where('lang', app()->getLocale())
                 ->take(1);
-        })
+        }])
             ->where('group_slug', $groupSlug)
             ->where('slug', $rowSlug)
             ->first();

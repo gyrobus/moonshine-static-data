@@ -16,10 +16,10 @@ trait StaticDataTrait {
      */
     public function loadStaticDataByGroup(string $groupSlug, string $viewVariableName = 'staticData'): void
     {
-        $staticData = StaticData::with('data', function ($q) {
+        $staticData = StaticData::with(['data' => function ($q) {
             $q->where('lang', app()->getLocale())
                 ->take(1);
-        })
+        }])
             ->where('group_slug', $groupSlug)
             ->get();
 
@@ -29,10 +29,10 @@ trait StaticDataTrait {
 
     public function loadStaticData(string|array $slug, string $viewVariableName = 'staticData'): void
     {
-        $staticData = StaticData::with('data', function ($q) {
+        $staticData = StaticData::with(['data' => function ($q) {
             $q->where('lang', app()->getLocale())
                 ->take(1);
-        });
+        }]);
         $staticData = $this->getStaticDataModelQuery($staticData, $slug);
         $staticData->get();
 
