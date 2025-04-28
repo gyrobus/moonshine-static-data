@@ -61,7 +61,7 @@ trait StaticDataTrait {
     {
         $staticData = [];
         foreach ($items as $item) {
-            $staticData[implode('.', [$item->group_slug, $item->slug])] = $item->data ? $item->data[0]->data : '';
+            $staticData[implode('.', [$item->group_slug, $item->slug])] = $item->data->first()?->data ?? '';
         }
         return $staticData;
     }
