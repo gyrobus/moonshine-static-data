@@ -40,7 +40,7 @@ trait StaticDataTrait {
         View::share($viewVariableName, array_merge(View::shared('staticData') ?? [], $this->getStaticDataArray($staticData)));
     }
 
-    protected function getStaticDataModelQuery(Builder $model, string|array $slug): StaticData
+    protected function getStaticDataModelQuery(Builder $model, string|array $slug): Builder
     {
         if (is_array($slug)) {
             foreach ($slug as $s) {
