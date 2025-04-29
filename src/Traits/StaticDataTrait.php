@@ -47,13 +47,14 @@ trait StaticDataTrait {
                 $model = $this->getStaticDataModelQuery($model, $s);
             }
         } elseif (is_string($slug)) {
-            $model->orWhere(function ($q) use ($slug) {
-                [$itemGroup, $itemSlug] = explode('.', $slug . '.', 2);
-                if ($itemGroup && $itemSlug) {
-                    $q->where('group_slug', $itemGroup)
-                        ->where('slug', $itemSlug);
-                }
-            });
+            $slug = rtrim($slug, '.');
+            $exp = explode('.', $slug);
+            if (count($exp) >= 2 && $exp[0] && $exp[1]) {
+                $model->orWhere(function ($q) use ($exp) {
+                    $q->where('group_slug', $exp[0])
+                        ->where('slug', $exp[1]);
+                });
+            }
         }
         return $model;
     }
