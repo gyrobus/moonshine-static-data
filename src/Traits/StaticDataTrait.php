@@ -5,6 +5,7 @@ namespace Gyrobus\MoonshineStaticData\Traits;
 use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 trait StaticDataTrait {
     /**
@@ -39,7 +40,7 @@ trait StaticDataTrait {
         View::share($viewVariableName, array_merge(View::shared('staticData') ?? [], $this->getStaticDataArray($staticData)));
     }
 
-    protected function getStaticDataModelQuery(StaticData $model, string|array $slug): StaticData
+    protected function getStaticDataModelQuery(Builder $model, string|array $slug): StaticData
     {
         if (is_array($slug)) {
             foreach ($slug as $s) {
