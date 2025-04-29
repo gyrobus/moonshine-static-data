@@ -35,7 +35,7 @@ trait StaticDataTrait {
                 ->take(1);
         }]);
         $staticData = $this->getStaticDataModelQuery($staticData, $slug);
-        $staticData->get();
+        $staticData = $staticData->get();
 
         View::share($viewVariableName, array_merge(View::shared('staticData') ?? [], $this->getStaticDataArray($staticData)));
     }
