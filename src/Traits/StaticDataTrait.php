@@ -5,6 +5,7 @@ namespace Gyrobus\MoonshineStaticData\Traits;
 use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 trait StaticDataTrait {
     /**
@@ -34,25 +35,26 @@ trait StaticDataTrait {
                 ->take(1);
         }]);
         $staticData = $this->getStaticDataModelQuery($staticData, $slug);
-        $staticData->get();
+        $staticData = $staticData->get();
 
         View::share($viewVariableName, array_merge(View::shared('staticData') ?? [], $this->getStaticDataArray($staticData)));
     }
 
-    protected function getStaticDataModelQuery(StaticData $model, string|array $slug): StaticData
+    protected function getStaticDataModelQuery(Builder $model, string|array $slug): Builder
     {
         if (is_array($slug)) {
             foreach ($slug as $s) {
                 $model = $this->getStaticDataModelQuery($model, $s);
             }
         } elseif (is_string($slug)) {
-            $model->orWhere(function ($q) use ($slug) {
-                [$itemGroup, $itemSlug] = explode('.', $slug . '.', 2);
-                if ($itemGroup && $itemSlug) {
-                    $q->where('group_slug', $itemGroup)
-                        ->where('slug', $itemSlug);
-                }
-            });
+            $slug = rtrim($slug, '.');
+            $exp = explode('.', $slug);
+            if (count($exp) >= 2 && $exp[0] && $exp[1]) {
+                $model->orWhere(function ($q) use ($exp) {
+                    $q->where('group_slug', $exp[0])
+                        ->where('slug', $exp[1]);
+                });
+            }
         }
         return $model;
     }
@@ -61,7 +63,7 @@ trait StaticDataTrait {
     {
         $staticData = [];
         foreach ($items as $item) {
-            $staticData[implode('.', [$item->group_slug, $item->slug])] = $item->data ? $item->data[0]->data : '';
+            $staticData[implode('.', [$item->group_slug, $item->slug])] = $item->data->first()?->data ?? '';
         }
         return $staticData;
     }
