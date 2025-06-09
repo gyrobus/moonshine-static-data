@@ -54,6 +54,8 @@ trait StaticDataTrait {
                     $q->where('group_slug', $exp[0])
                         ->where('slug', $exp[1]);
                 });
+            } elseif (count($exp) == 1 && $exp[0]) {
+                $model->orWhere('group_slug', $exp[0]);
             }
         }
         return $model;
