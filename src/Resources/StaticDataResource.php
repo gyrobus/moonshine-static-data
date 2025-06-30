@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Gyrobus\MoonshineStaticData\Resources;
+
 use Gyrobus\MoonshineStaticData\Models\StaticData;
 use Gyrobus\MoonshineStaticData\Models\StaticDataValue;
 use Gyrobus\MoonshineStaticData\Pages\GroupIndex;
@@ -100,7 +102,7 @@ class StaticDataResource extends ModelResource
                 case "image": {
                     $extra = $item->extra;
                     $crop = Cropper::make(__('moonshine-static-data::main.image'), 'data')
-                        ->ratio((float) ($extra['ratio'] ?? 0))
+                        ->ratio((float) ($extra['ratio'] ?? config('moonshine-static-data.main.image.ratio')))
                         ->disk($extra['disk'] ?? 'public');
                     if (isset($extra['dir'])) $crop->dir($extra['dir'] ?? '');
                     if (isset($extra['mode'])) $crop->mode((int) ($extra['mode'] ?? 1));
