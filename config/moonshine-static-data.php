@@ -25,6 +25,8 @@ return [
             'mode' => 1
         ]
 
-    ]
+    ],
+
+    'cache_hours' => 0
 
 ];

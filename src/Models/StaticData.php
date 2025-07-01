@@ -21,8 +21,8 @@ class StaticData extends Model
         return $this->hasMany(StaticDataValue::class);
     }
 
-    public function getData($lang = null, $default = '')
+    public function getData(?string $lang = null, string $default = ''): string
     {
-        return $this->data->where('lang', $lang ?? app()->getLocale())->first()->data ?? $default;
+        return optional($this->data->where('lang', $lang ?? app()->getLocale())->first())->data ?? $default;
     }
 }

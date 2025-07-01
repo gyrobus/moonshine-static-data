@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Gyrobus\MoonshineStaticData\Models\StaticData;
 
@@ -9,12 +10,34 @@ if (!function_exists('staticData')) {
      *
      * @param string $key
      * @param mixed $default
+     * @param string $viewVariableName
      * @return mixed
      */
-    function staticData(string $key, $default = '', $viewVariableName = 'staticData'): string
+    function staticData(string $key, $default = '', $viewVariableName = 'staticData'): mixed
     {
         $staticData = View::shared($viewVariableName) ?? [];
-        if (isset($staticData[$key])) return $staticData[$key];
+        if (isset($staticData[$key])) {
+            return $staticData[$key];
+        }
+
+        $cacheHours = config('moonshine-static-data.cache_hours', 0);
+
+        if ($cacheHours && is_numeric($cacheHours) && $cacheHours > 0) {
+
+            $cacheKey = "static_data:{$key}:" . app()->getLocale();
+            $cachedValue = Cache::get($cacheKey);
+
+            if ($cachedValue !== null) {
+
+                View::share(
+                    $viewVariableName,
+                    array_merge($staticData, [$key => $cachedValue])
+                );
+
+                return $cachedValue;
+            }
+
+        }
 
         [$groupSlug, $rowSlug] = explode('.', $key, 2);
 
@@ -26,16 +49,26 @@ if (!function_exists('staticData')) {
             ->where('slug', $rowSlug)
             ->first();
 
-        if ($item) {
+        $value = $default;
+
+        if ($item && $item->data && $item->data->count()) {
+
+            $value = $item->data->first()->data;
+
+            if (isset($cacheKey)) {
+                Cache::put($cacheKey, $value, now()->addHours($cacheHours));
+            }
+
             View::share(
                 $viewVariableName,
                 array_merge(
-                    View::shared($viewVariableName) ?? [],
-                    [implode('.', [$item->group_slug, $item->slug]) => $item->data && $item->data->count() ? $item->data[0]->data : $default]
+                    $staticData,
+                    [$key => $value]
                 )
             );
+
         }
 
-        return $item && $item->data && $item->data->count() ? $item->data[0]->data : $default;
+        return $value;
     }
 }
