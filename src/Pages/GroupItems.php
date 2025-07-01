@@ -58,6 +58,8 @@ class GroupItems extends Page
                             'interval' => __('moonshine-static-data::type.interval'),
                             'phone' => __('moonshine-static-data::type.phone'),
                             'textarea' => __('moonshine-static-data::type.textarea'),
+                            'cropper' => __('moonshine-static-data::type.image'),
+                            'file' => __('moonshine-static-data::type.file'),
                         ]),
                     Text::make('Slug', 'slug'),
                 ])
