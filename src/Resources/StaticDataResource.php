@@ -243,7 +243,7 @@ class StaticDataResource extends ModelResource
         return '';
     }
 
-    protected function removeFileIfExist(StaticDataValue $item, Storage $storage = null): void
+    protected function removeFileIfExist(StaticDataValue $item, $storage = null): void
     {
         if (is_null($storage)) {
             $extra = $data->staticData->extra ?? [];
