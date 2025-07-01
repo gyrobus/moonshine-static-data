@@ -9,6 +9,7 @@ use Gyrobus\MoonshineStaticData\Models\StaticDataValue;
 use Gyrobus\MoonshineStaticData\Pages\GroupIndex;
 use Gyrobus\MoonshineStaticData\Pages\GroupItemForm;
 use Gyrobus\MoonshineStaticData\Pages\GroupItems;
+use Illuminate\Support\Facades\Storage;
 use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Http\Responses\MoonShineJsonResponse;
 use MoonShine\Laravel\MoonShineRequest;
@@ -175,24 +176,79 @@ class StaticDataResource extends ModelResource
     public function saveDataValue(MoonShineRequest $request): MoonShineJsonResponse
     {
         if ($request->input('id')) {
-            $data = StaticDataValue::find($request->input('id'));
-            if ($data && $data->update(['data' => $request->input('data')])) {
-                return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.save'), ToastType::SUCCESS);
+
+            $data = StaticDataValue::with('staticData')
+                ->find($request->input('id'));
+
+            $value = $request->input('data');
+
+            if ($data) {
+
+                $type = $data->staticData->type ?? null;
+
+                if (in_array($type, ['cropper', 'image', 'file'])) {
+                    if ($request->hasFile('data')) {
+                        $value = $this->saveUploadFile($request, $data);
+                    }
+                }
+
+                if ($data->update(['data' => $value])) {
+                    return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveSuccess'), ToastType::SUCCESS);
+                }
             }
+
         } else {
+
             if ($request->input('static_data_id')) {
 
-                StaticDataValue::updateOrCreate([
+                $value = $request->input('data');
+                $staticData = StaticData::find($request->input('static_data_id'));
+
+                $type = $staticData->type ?? null;
+
+                $data = StaticDataValue::updateOrCreate([
                     'static_data_id' => $request->input('static_data_id'),
                     'lang' => $request->input('lang')
                 ],[
-                    'data' => $request->input('data'),
+                    'data' => $value,
                 ]);
 
-                return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveSuccess'), ToastType::SUCCESS);
+                if (in_array($type, ['cropper', 'image', 'file'])) {
+                    if ($request->hasFile('data')) {
+                        $value = $this->saveUploadFile($request, $data);
+                        if ($data->update(['data' => $value])) {
+                            return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveSuccess'), ToastType::SUCCESS);
+                        }
+                    }
+                } else {
+                    return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveSuccess'), ToastType::SUCCESS);
+                }
             }
         }
 
         return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveError'), ToastType::ERROR);
+    }
+
+    protected function saveUploadFile(MoonShineRequest $request, $data): string
+    {
+        if ($request->hasFile('data')) {
+            $extra = $data->staticData->extra ?? [];
+            $file = $request->file('data');
+            $fileName = str($file->getClientOriginalName())->slug('_') . '.' . $file->extension();
+            $storage = Storage::disk($extra['disk'] ?? 'public');
+            $this->removeFileIfExist($data, $storage);
+            return $storage->putFileAs($extra['dir'] ?? '', $file, $fileName);
+        }
+
+        return '';
+    }
+
+    protected function removeFileIfExist(StaticDataValue $item, Storage $storage = null): void
+    {
+        if (is_null($storage)) {
+            $extra = $data->staticData->extra ?? [];
+            $storage = Storage::disk($extra['disk'] ?? 'public');
+        }
+        if ($item->data && $storage && $storage->exists($item->data)) $storage->delete($item->data);
     }
 }

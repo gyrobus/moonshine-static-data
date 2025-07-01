@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('static_data_id');
             $table->mediumText('data')->nullable();
+            $table->text('options')->nullable();
             $table->string('lang')->nullable();
             $table->timestamps();
 

@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class StaticDataValue extends Model
 {
     protected $fillable = [
-        'static_data_id', 'data', 'lang'
+        'static_data_id', 'data', 'options', 'lang'
+    ];
+
+    protected $casts = [
+        'options' => 'json'
     ];
 
     public function staticData(): BelongsTo

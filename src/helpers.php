@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Gyrobus\MoonshineStaticData\Models\StaticData;
+
 
 if (!function_exists('staticData')) {
     /**
@@ -54,6 +56,12 @@ if (!function_exists('staticData')) {
         if ($item && $item->data && $item->data->count()) {
 
             $value = $item->data->first()->data;
+
+            if (in_array($item->type, ['file', 'image', 'cropper'])) {
+                $extra = $item->extra ?? [];
+                $storage = Storage::disk($extra['disk'] ?? 'public');
+                $value = $storage->url($value);
+            }
 
             if (isset($cacheKey)) {
                 Cache::put($cacheKey, $value, now()->addHours($cacheHours));
