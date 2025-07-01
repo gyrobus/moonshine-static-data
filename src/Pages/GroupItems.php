@@ -52,10 +52,12 @@ class GroupItems extends Page
                     Text::make(__('moonshine-static-data::main.name'), 'name'),
                     Select::make('Тип', 'type')
                         ->options([
-                            'editor' => __('moonshine-static-data::main.editor'),
-                            'image' => __('moonshine-static-data::main.image'),
-                            'text' => __('moonshine-static-data::main.text'),
-                            'interval' => __('moonshine-static-data::main.interval')
+                            'editor' => __('moonshine-static-data::type.editor'),
+                            'image' => __('moonshine-static-data::type.image'),
+                            'text' => __('moonshine-static-data::type.text'),
+                            'interval' => __('moonshine-static-data::type.interval'),
+                            'phone' => __('moonshine-static-data::type.phone'),
+                            'textarea' => __('moonshine-static-data::type.textarea'),
                         ]),
                     Text::make('Slug', 'slug'),
                 ])

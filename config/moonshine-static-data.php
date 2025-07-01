@@ -27,6 +27,8 @@ return [
 
     ],
 
-    'cache_hours' => 0
+    'cache_hours' => 0,
+
+    'has_create' => true
 
 ];

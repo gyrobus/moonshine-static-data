@@ -23,6 +23,7 @@ use MoonShine\Contracts\UI\ComponentContract;
 use Gyrobus\MoonshineCropper\Fields\Cropper;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Phone;
 use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Text;
 
