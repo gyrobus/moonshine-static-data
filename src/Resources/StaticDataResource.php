@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Gyrobus\MoonshineStaticData\Resources;
 
 use Gyrobus\MoonshineStaticData\Models\StaticData;
+use Gyrobus\MoonshineStaticData\Models\StaticDataGroup;
 use Gyrobus\MoonshineStaticData\Models\StaticDataValue;
+use Gyrobus\MoonshineStaticData\Pages\GroupForm;
 use Gyrobus\MoonshineStaticData\Pages\GroupIndex;
+use Gyrobus\MoonshineStaticData\Pages\GroupItemCreate;
 use Gyrobus\MoonshineStaticData\Pages\GroupItemForm;
 use Gyrobus\MoonshineStaticData\Pages\GroupItems;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +18,7 @@ use MoonShine\Laravel\Http\Responses\MoonShineJsonResponse;
 use MoonShine\Laravel\MoonShineRequest;
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Laravel\Pages\Crud\IndexPage;
+use MoonShine\Laravel\MoonShineUI;
 use MoonShine\Support\Enums\ToastType;
 use MoonShine\TinyMce\Fields\TinyMce;
 use MoonShine\UI\Components\Layout\Box;
@@ -52,6 +56,9 @@ class StaticDataResource extends ModelResource
             GroupItemForm::class,
 
             IndexPage::class,
+
+            GroupForm::class,
+            GroupItemCreate::class,
         ];
     }
 
@@ -227,6 +234,53 @@ class StaticDataResource extends ModelResource
         }
 
         return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveError'), ToastType::ERROR);
+    }
+
+    public function createGroup(MoonShineRequest $request): MoonShineJsonResponse
+    {
+        if (!config('moonshine-static-data.create_group')) {
+            return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveError'), ToastType::ERROR);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:static_data_groups',
+            'slug' => 'required|string|max:255|unique:static_data_groups'
+        ]);
+
+        StaticDataGroup::create([
+            'name' => $request->input('name'),
+            'slug' => $request->input('slug'),
+        ]);
+
+        return MoonShineJsonResponse::make()
+            ->redirect(toPage(GroupIndex::class, StaticDataResource::class));
+    }
+
+    public function createGroupItem(MoonShineRequest $request): MoonShineJsonResponse
+    {
+        if (!config('moonshine-static-data.create_param')) {
+            return MoonShineJsonResponse::make()->toast(__('moonshine-static-data::main.saveError'), ToastType::ERROR);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:static_data',
+            'group' => 'required|string|max:255|exists:static_data_groups,name',
+            'type' => 'required|string|max:255|in:editor,interval,image,phone,text'
+        ]);
+
+        $group = StaticDataGroup::where('name', $request->input('group'))->first();
+
+        $item = StaticData::create([
+            'name' => $request->input('name'),
+            'slug' => $request->input('slug'),
+            'group' => $group->name,
+            'group_slug' => $group->slug,
+            'type' => $request->input('type')
+        ]);
+
+        return MoonShineJsonResponse::make()
+            ->redirect(toPage(GroupItemForm::class, StaticDataResource::class, [$item->id]));
     }
 
     protected function saveUploadFile(MoonShineRequest $request, $data): string

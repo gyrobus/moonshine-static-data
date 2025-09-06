@@ -39,9 +39,5 @@ final class StaticDataServiceProvider extends ServiceProvider
         $core->resources([
             StaticDataResource::class
         ]);
-
-        $menu->add([
-            MenuItem::make(__('moonshine-static-data::main.menu'), StaticDataResource::class)
-        ]);
     }
 }

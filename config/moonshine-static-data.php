@@ -29,6 +29,7 @@ return [
 
     'cache_hours' => 0,
 
-    'has_create' => true
+    'create_group' => true,
+    'create_param' => true,
 
 ];
